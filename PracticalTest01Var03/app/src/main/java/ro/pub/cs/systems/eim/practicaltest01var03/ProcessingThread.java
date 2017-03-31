@@ -17,7 +17,7 @@ public class ProcessingThread extends Thread {
     private Context context;
     private String nume, grupa;
 
-    public ProcessingThread(Context context, String nume, String grupe) {
+    public ProcessingThread(Context context, String nume, String grupa) {
 
         this.context = context;
         this.nume = nume;
@@ -28,11 +28,11 @@ public class ProcessingThread extends Thread {
     public void run() {
         while(true){
             sendMessage(Constants.MESSAGE_NAME);
-            Log.i(TAG, "run: send integer");
+            Log.i(TAG, "run: send name");
             sleep();
 
             sendMessage(Constants.MESSAGE_GRUPA);
-            Log.i(TAG, "run: send array");
+            Log.i(TAG, "run: send grupa");
             sleep();
         }
     }
@@ -46,7 +46,7 @@ public class ProcessingThread extends Thread {
                 break;
 
             case Constants.MESSAGE_GRUPA:
-                intent.setAction(Constants.ACTION_NUME);
+                intent.setAction(Constants.ACTION_GRUPA);
                 intent.putExtra(Constants.DATA, grupa);
                 break;
         }

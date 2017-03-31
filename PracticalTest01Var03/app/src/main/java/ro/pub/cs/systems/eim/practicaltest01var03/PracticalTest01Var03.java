@@ -1,6 +1,9 @@
 package ro.pub.cs.systems.eim.practicaltest01var03;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +15,8 @@ import android.widget.Toast;
 
 import practicaltest01var03.eim.systems.cs.pub.ro.practicaltest01var03.R;
 import ro.pub.cs.systems.eim.practicaltest01var03.util.Constants;
+
+import static android.content.ContentValues.TAG;
 
 
 public class PracticalTest01Var03 extends AppCompatActivity {
@@ -101,6 +106,13 @@ public class PracticalTest01Var03 extends AppCompatActivity {
                 showInfo.setText(savedInstanceState.getString(Constants.SHOW_ET));
             }
         }
+
+       messageBroadcastReceiver = new MessageBroadcastReceiver();
+
+        startedServiceIntentFilter = new IntentFilter();
+        startedServiceIntentFilter.addAction(Constants.ACTION_GRUPA);
+        startedServiceIntentFilter.addAction(Constants.ACTION_NUME);
+
     }
 
 
@@ -159,5 +171,42 @@ public class PracticalTest01Var03 extends AppCompatActivity {
         Intent intent = new Intent(this, PracticalTest01Var03Service.class);
         stopService(intent);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, startedServiceIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
+    }
+
+    private MessageBroadcastReceiver messageBroadcastReceiver;
+    private IntentFilter startedServiceIntentFilter;
+
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            String data = null;
+
+            if(Constants.ACTION_NUME.equals(action)){
+                data = intent.getStringExtra(Constants.DATA);
+                Toast.makeText(getBaseContext(), data, Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "onReceive: pe grupa" + data);
+            }
+
+            if(Constants.ACTION_GRUPA.equals(action)){
+                data = intent.getStringExtra(Constants.DATA);
+                Log.i(TAG, "onReceive: pe nume" + data);
+                Toast.makeText(getBaseContext(), data, Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 }
